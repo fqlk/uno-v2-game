@@ -1,8 +1,10 @@
 services:
   - type: web
     name: uno-v2
-    runtime: docker
-    plan: free # Use 'free' for the free tier, can be changed later
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server/server.js
     envVars:
-      - key: PORT
-        value: 3000
+      - key: NODE_ENV
+        value: production

@@ -329,7 +329,6 @@ io.on('connection', (socket) => {
         if (card) {
             player.lockedBet = card;
             socket.emit('betConfirmed', card.id);
-            UI.notify('BET LOCKED IN!', 'special');
         }
     });
 
