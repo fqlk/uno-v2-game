@@ -30,28 +30,29 @@ const UI = {
         const layer = document.getElementById('vfx-layer');
         if (!layer) return;
 
-        // Spawn occasional background particles
         setInterval(() => {
             const p = document.createElement('div');
-            p.style.position = 'absolute';
-            p.style.left = Math.random() * 100 + '%';
-            p.style.top = '110%';
-            p.style.width = '2px';
-            p.style.height = '2px';
-            p.style.background = 'rgba(255, 255, 255, 0.2)';
-            p.style.boxShadow = '0 0 10px rgba(0, 242, 255, 0.5)';
-            p.style.borderRadius = '50%';
+            p.style.cssText = `
+                position: absolute;
+                left: ${Math.random() * 100}%;
+                top: 110%;
+                width: 2px;
+                height: 2px;
+                background: rgba(255, 255, 255, 0.15);
+                box-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
+                border-radius: 50%;
+            `;
             layer.appendChild(p);
 
             p.animate([
                 { transform: 'translateY(0) scale(1)', opacity: 0 },
-                { transform: 'translateY(-100px)', opacity: 0.5, offset: 0.2 },
+                { transform: 'translateY(-100px)', opacity: 0.4, offset: 0.2 },
                 { transform: `translateY(-${window.innerHeight + 200}px) scale(0)`, opacity: 0 }
             ], {
                 duration: Math.random() * 5000 + 5000,
                 easing: 'linear'
             }).onfinish = () => p.remove();
-        }, 300);
+        }, 500);
     },
 
     showScreen(screenName) {
@@ -59,65 +60,58 @@ const UI = {
         const activeScreen = this.screens[screenName];
         activeScreen.classList.remove('hidden');
 
-        // Cinematic Spring Entrance
         activeScreen.animate([
-            { opacity: 0, transform: 'scale(0.9) translateY(40px) rotateX(-10deg)' },
-            { opacity: 1, transform: 'scale(1) translateY(0) rotateX(0deg)' }
-        ], { duration: 1000, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' });
+            { opacity: 0, transform: 'translateY(20px) scale(0.97)' },
+            { opacity: 1, transform: 'translateY(0) scale(1)' }
+        ], { duration: 600, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' });
     },
 
     notify(message, type = 'info') {
         const container = document.getElementById('toast-container');
         const toast = document.createElement('div');
-        toast.className = 'opponent-box';
-        if (type === 'chaos') toast.classList.add('chaos-alert');
-        if (type === 'error') toast.style.borderColor = 'var(--accent-red)';
-
-        toast.style.padding = '1rem 2rem';
-        toast.style.background = 'var(--glass-bg)';
-        toast.style.backdropFilter = 'blur(20px)';
-        toast.style.borderLeft = `4px solid ${type === 'error' ? 'var(--accent-red)' : (type === 'special' ? 'var(--accent)' : 'var(--primary)')}`;
-        toast.innerHTML = `<span style="font-weight: 700; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,255,255,0.3);">${message.toUpperCase()}</span>`;
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<span>${message.toUpperCase()}</span>`;
 
         container.appendChild(toast);
 
         toast.animate([
-            { transform: 'translateX(100px) scale(0.8)', opacity: 0 },
-            { transform: 'translateX(0) scale(1)', opacity: 1 }
-        ], { duration: 600, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' });
+            { transform: 'translateX(60px)', opacity: 0 },
+            { transform: 'translateX(0)', opacity: 1 }
+        ], { duration: 400, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' });
 
         setTimeout(() => {
             toast.animate([
-                { transform: 'translateX(0) scale(1)', opacity: 1 },
-                { transform: 'translateX(100px) scale(0.8)', opacity: 0 }
-            ], { duration: 400, easing: 'ease-in' }).onfinish = () => toast.remove();
-        }, 5000);
+                { transform: 'translateX(0)', opacity: 1 },
+                { transform: 'translateX(60px)', opacity: 0 }
+            ], { duration: 300, easing: 'ease-in' }).onfinish = () => toast.remove();
+        }, 4000);
     },
 
-    spawnParticles(x, y, color = 'var(--primary)', count = 20) {
+    spawnParticles(x, y, color = 'var(--primary)', count = 15) {
         for (let i = 0; i < count; i++) {
             const p = document.createElement('div');
-            p.style.position = 'fixed';
-            p.style.left = x + 'px';
-            p.style.top = y + 'px';
-            p.style.width = Math.random() * 8 + 4 + 'px';
-            p.style.height = p.style.width;
-            p.style.borderRadius = '50%';
-            p.style.background = color;
-            p.style.pointerEvents = 'none';
-            p.style.zIndex = '10000';
-            p.style.boxShadow = `0 0 20px ${color}`;
-
+            p.style.cssText = `
+                position: fixed;
+                left: ${x}px;
+                top: ${y}px;
+                width: ${Math.random() * 6 + 3}px;
+                height: ${Math.random() * 6 + 3}px;
+                border-radius: 50%;
+                background: ${color};
+                pointer-events: none;
+                z-index: 10000;
+                box-shadow: 0 0 10px ${color};
+            `;
             document.body.appendChild(p);
 
-            const destX = (Math.random() - 0.5) * 600;
-            const destY = (Math.random() - 0.5) * 600;
+            const destX = (Math.random() - 0.5) * 400;
+            const destY = (Math.random() - 0.5) * 400;
 
             p.animate([
                 { transform: 'translate(0, 0) scale(1)', opacity: 1 },
                 { transform: `translate(${destX}px, ${destY}px) scale(0)`, opacity: 0 }
             ], {
-                duration: Math.random() * 800 + 400,
+                duration: Math.random() * 600 + 300,
                 easing: 'cubic-bezier(0.1, 0.8, 0.1, 1)'
             }).onfinish = () => p.remove();
         }
@@ -131,15 +125,15 @@ const UI = {
             el.className = 'btn-premium';
             el.style.justifyContent = 'space-between';
             el.innerHTML = `
-                <span>${p.username.toUpperCase()} ${p.id === hostId ? ' (HOST)' : ''}</span>
-                ${p.id === myId ? '<span style="color: var(--primary); font-size: 0.7rem; font-weight: 800;">YOU</span>' : ''}
+                <span>${p.username.toUpperCase()} ${p.id === hostId ? '(HOST)' : ''}</span>
+                ${p.id === myId ? '<span style="color: var(--primary); font-size: 0.65rem; font-weight: 800;">YOU</span>' : ''}
             `;
             list.appendChild(el);
 
             el.animate([
-                { opacity: 0, transform: 'translateY(20px)' },
+                { opacity: 0, transform: 'translateY(15px)' },
                 { opacity: 1, transform: 'translateY(0)' }
-            ], { duration: 600, delay: index * 100, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' });
+            ], { duration: 500, delay: index * 80, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' });
         });
 
         if (myId === hostId) {
@@ -150,13 +144,13 @@ const UI = {
 
     createCardElement(card) {
         const el = document.createElement('div');
-        el.className = `card ${card.color} ${card.value}`;
+        el.className = `card ${card.color}`;
 
-        // Premium inner card styling
+        const displayValue = this.formatCardValue(card.value);
         el.innerHTML = `
-            <div style="font-weight: 800; font-size: 3rem; text-shadow: 0 5px 15px rgba(0,0,0,0.5);">${this.formatCardValue(card.value)}</div>
-            <div style="position: absolute; top: 15px; left: 15px; font-weight: 800; font-size: 1rem;">${this.formatCardValue(card.value)}</div>
-            <div style="position: absolute; bottom: 15px; right: 15px; font-weight: 800; font-size: 1rem; transform: rotate(180deg);">${this.formatCardValue(card.value)}</div>
+            <span class="card-corner top">${displayValue}</span>
+            <span class="card-value">${displayValue}</span>
+            <span class="card-corner bottom">${displayValue}</span>
         `;
         return el;
     },
@@ -166,10 +160,17 @@ const UI = {
         container.innerHTML = '';
         hand.forEach((card, index) => {
             const el = this.createCardElement(card);
-            if (index > 0) el.style.marginLeft = '-80px';
 
             el.onclick = (e) => {
-                this.spawnParticles(e.clientX, e.clientY, `var(--${card.color === 'special' ? 'accent' : (card.color === 'wild' ? 'primary' : 'primary')})`);
+                const colorMap = {
+                    red: '#ef4444',
+                    blue: '#3b82f6',
+                    green: '#22c55e',
+                    yellow: '#eab308',
+                    special: '#a855f7',
+                    wild: '#00d4ff'
+                };
+                this.spawnParticles(e.clientX, e.clientY, colorMap[card.color] || '#00d4ff');
                 onPlay(card.id);
             };
 
@@ -188,11 +189,11 @@ const UI = {
             container.appendChild(el);
 
             el.animate([
-                { opacity: 0, transform: 'translateY(150px) rotate(15deg) scale(0.5)' },
-                { opacity: 1, transform: 'translateY(0) rotate(0deg) scale(1)' }
+                { opacity: 0, transform: 'translateY(80px) scale(0.6)' },
+                { opacity: 1, transform: 'translateY(0) scale(1)' }
             ], {
-                duration: 800,
-                delay: index * 40,
+                duration: 500,
+                delay: index * 35,
                 easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
             });
         });
@@ -217,35 +218,42 @@ const UI = {
         const discard = document.getElementById('discard-pile');
         discard.innerHTML = '';
         const el = this.createCardElement(topCard);
+        el.style.cursor = 'default';
         discard.appendChild(el);
+
+        // Entrance animation for discard
+        el.animate([
+            { transform: 'scale(0.5) rotate(-15deg)', opacity: 0 },
+            { transform: 'scale(1) rotate(0deg)', opacity: 1 }
+        ], { duration: 400, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' });
 
         const swatch = document.getElementById('color-swatch');
         const colorMap = {
-            red: 'var(--accent-red)',
-            blue: 'var(--primary)',
-            green: '#00ff88',
-            yellow: '#ffcc00',
-            special: 'var(--accent)',
-            wild: 'var(--primary)'
+            red: '#ef4444',
+            blue: '#3b82f6',
+            green: '#22c55e',
+            yellow: '#eab308',
+            special: '#a855f7',
+            wild: '#00d4ff'
         };
-        const activeColor = colorMap[currentColor] || 'var(--primary)';
+        const activeColor = colorMap[currentColor] || '#00d4ff';
         swatch.style.background = activeColor;
-        swatch.style.boxShadow = `0 0 30px ${activeColor}`;
+        swatch.style.boxShadow = `0 0 20px ${activeColor}`;
 
         const currentTurnName = players[turnIndex]?.username;
         document.getElementById('current-turn').textContent = (currentTurnName || '-').toUpperCase();
 
         this.renderOpponents(players, turnIndex);
 
-        // Shake board on special cards
+        // Board shake on special cards
         if (topCard.color === 'special') {
             document.getElementById('game-container').animate([
-                { transform: 'translate(2px, 2px) rotate(0deg)' },
-                { transform: 'translate(-2px, -4px) rotate(-1deg)' },
-                { transform: 'translate(-6px, 0px) rotate(1deg)' },
-                { transform: 'translate(6px, 4px) rotate(0deg)' },
-                { transform: 'translate(2px, -2px) rotate(1deg)' }
-            ], { duration: 300 });
+                { transform: 'translate(2px, 1px)' },
+                { transform: 'translate(-3px, -2px)' },
+                { transform: 'translate(3px, 2px)' },
+                { transform: 'translate(-1px, -1px)' },
+                { transform: 'translate(0, 0)' }
+            ], { duration: 250 });
         }
     },
 
@@ -256,8 +264,8 @@ const UI = {
             const el = document.createElement('div');
             el.className = `opponent-box ${idx === turnIndex ? 'active' : ''}`;
             el.innerHTML = `
-                <p style="font-weight: 800; font-size: 1rem; letter-spacing: 1px;">${p.username.toUpperCase()}</p>
-                <p style="font-size: 0.75rem; color: var(--primary); font-weight: 700; opacity: 0.8;">${p.handCount} DATA UNITS</p>
+                <p class="opponent-name">${p.username.toUpperCase()}</p>
+                <p class="opponent-cards">${p.handCount} CARDS</p>
             `;
             container.appendChild(el);
         });
@@ -269,7 +277,7 @@ const UI = {
         const puName = document.getElementById('pu-name');
         const puDesc = document.getElementById('pu-desc');
 
-        puUser.textContent = `${user.toUpperCase()} HAS INITIATED`;
+        puUser.textContent = `${user.toUpperCase()} ACTIVATED`;
         puName.textContent = name;
         puDesc.textContent = desc;
 
@@ -280,8 +288,8 @@ const UI = {
             overlay.style.opacity = '0';
             setTimeout(() => {
                 overlay.classList.add('hidden');
-            }, 800);
-        }, 3500);
+            }, 600);
+        }, 3000);
     },
 
     showTargetPicker(players) {
@@ -291,6 +299,7 @@ const UI = {
         players.forEach(p => {
             const btn = document.createElement('button');
             btn.className = 'btn-premium btn-primary';
+            btn.style.gridColumn = 'span 1';
             btn.textContent = p.username.toUpperCase();
             btn.onclick = () => {
                 socket.emit('selectTarget', p.id);

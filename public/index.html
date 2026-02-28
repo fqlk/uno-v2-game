@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>UNO V2 | Premium Experience</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="manifest" href="manifest.json">
     <script src="/socket.io/socket.io.js"></script>
@@ -21,6 +25,7 @@
         <!-- START SCREEN -->
         <div id="screen-start" class="screen-wrapper">
             <header class="panel-header">
+                <div class="logo-badge">UNO</div>
                 <h1 class="premium-title">UNO V2</h1>
                 <p class="title-sub">The Premium Multiplayer Experience</p>
             </header>
@@ -42,10 +47,9 @@
                     </button>
                 </div>
 
-                <div id="join-controls" class="hidden" style="margin-top: 2rem; width: 100%; max-width: 440px;">
+                <div id="join-controls" class="hidden">
                     <input type="text" id="room-code" class="premium-input" placeholder="6-DIGIT CODE">
-                    <button id="btn-confirm-join" class="btn-premium btn-primary"
-                        style="width: 100%; margin-top: 1rem;">JOIN PARTY</button>
+                    <button id="btn-confirm-join" class="btn-premium btn-primary">JOIN PARTY</button>
                 </div>
             </div>
         </div>
@@ -54,87 +58,100 @@
         <div id="screen-lobby" class="screen-wrapper hidden">
             <header class="panel-header">
                 <p class="title-sub">ROOM CODE</p>
-                <h2 id="display-room-code"
-                    style="font-size: 4rem; font-weight: 800; letter-spacing: 12px; margin: 1rem 0;">------</h2>
+                <h2 id="display-room-code" class="room-code-display">------</h2>
             </header>
 
             <div class="panel-content">
-                <div id="player-list"
-                    style="width: 100%; max-width: 600px; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                <div id="player-list" class="player-grid">
                     <!-- Players go here -->
                 </div>
 
-                <button id="btn-start" class="btn-premium btn-primary hidden" style="width: 300px;">START GAME</button>
-                <p id="waiting-msg" style="opacity: 0.6; font-weight: 600;">WAITING FOR HOST TO START...</p>
+                <button id="btn-start" class="btn-premium btn-primary hidden">START GAME</button>
+                <p id="waiting-msg" class="waiting-text">WAITING FOR HOST TO START...</p>
             </div>
         </div>
 
         <!-- GAME SCREEN -->
-        <div id="screen-game" class="screen-wrapper hidden"
-            style="height: 100%; display: flex; flex-direction: column;">
-            <header id="opponents" style="padding: 1.5rem; display: flex; justify-content: center; gap: 2rem;">
+        <div id="screen-game" class="screen-wrapper hidden">
+            <header id="opponents" class="opponents-bar">
                 <!-- Opponents -->
             </header>
 
             <main id="board">
-                <div id="draw-pile" class="card" style="background: var(--grad-main);">
-                    <div style="font-weight: 800; font-size: 1.2rem; color: #fff;">UNO</div>
+                <div id="draw-pile" class="card draw-card">
+                    <div class="draw-card-label">UNO</div>
+                    <div class="draw-card-sub">DRAW</div>
                 </div>
 
                 <div id="discard-pile">
                     <!-- Top card -->
                 </div>
 
-                <div class="game-meta opponent-box" style="padding: 1rem 2rem;">
-                    <p class="title-sub" style="font-size: 0.7rem; margin: 0;">CURRENT TURN</p>
-                    <h3 id="current-turn" style="font-size: 1.2rem; margin: 0.2rem 0;">-</h3>
-                    <div id="color-swatch" style="height: 4px; border-radius: 2px; background: #fff; margin-top: 10px;">
-                    </div>
+                <div class="game-meta-box">
+                    <p class="meta-label">CURRENT TURN</p>
+                    <h3 id="current-turn" class="meta-value">-</h3>
+                    <div id="color-swatch" class="color-indicator"></div>
                 </div>
             </main>
 
-            <footer>
+            <footer class="hand-footer">
                 <div id="my-hand">
                     <!-- Cards -->
                 </div>
-                <div style="position: absolute; right: 3rem; bottom: 3rem; display: flex; gap: 1rem;">
-                    <button id="btn-uno" class="btn-premium hidden"
-                        style="background: var(--accent-red); border: none;">CALL UNO!</button>
+                <div class="hand-actions">
+                    <button id="btn-uno" class="btn-uno hidden">UNO!</button>
                 </div>
             </footer>
         </div>
 
         <!-- VICTORY SCREEN -->
         <div id="screen-victory" class="screen-wrapper hidden">
-            <header class="panel-header">
-                <p class="title-sub">🏆 WINNER 🏆</p>
+            <div class="victory-content">
+                <div class="trophy-icon">🏆</div>
+                <p class="title-sub">WINNER</p>
                 <h1 id="winner-name" class="premium-title">CONGRATS!</h1>
-                <button id="btn-rematch" class="btn-premium btn-primary" style="margin: 3rem auto 0; width: 300px;">PLAY
-                    AGAIN</button>
-            </header>
+                <button id="btn-rematch" class="btn-premium btn-primary">PLAY AGAIN</button>
+            </div>
         </div>
     </div>
 
-    <!-- UI Overlay elements -->
+    <!-- UI Overlay elements (OUTSIDE game-container) -->
     <div id="toast-container"></div>
-    <div id="target-picker" class="hidden"
-        style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); z-index: 1000; display: flex; align-items: center; justify-content: center;">
-        <div class="main-panel" style="max-width: 400px; height: auto; padding: 3rem;">
-            <h3 style="margin-bottom: 2rem; text-align: center;">SELECT TARGET</h3>
-            <div id="target-list" style="display: flex; flex-direction: column; gap: 1rem;"></div>
-        </div>
-        <div id="powerup-overlay" class="hidden">
-            <div class="cinematic-content">
-                <p id="pu-user" class="title-sub"></p>
-                <h1 id="pu-name" class="premium-title">POWERUP</h1>
-                <p id="pu-desc" style="font-weight: 600; color: var(--primary); letter-spacing: 2px;"></p>
+
+    <!-- Color Picker Overlay -->
+    <div id="color-picker" class="overlay-modal hidden">
+        <div class="overlay-modal-inner">
+            <h3 class="overlay-modal-title">CHOOSE A COLOR</h3>
+            <div class="color-btn-grid">
+                <button class="color-btn color-btn-red" data-color="red"></button>
+                <button class="color-btn color-btn-blue" data-color="blue"></button>
+                <button class="color-btn color-btn-green" data-color="green"></button>
+                <button class="color-btn color-btn-yellow" data-color="yellow"></button>
             </div>
         </div>
+    </div>
 
-        <script src="js/audio.js"></script>
-        <script src="js/ui.js"></script>
-        <script src="js/socket.js"></script>
-        <script src="js/game.js"></script>
+    <!-- Target Picker Overlay -->
+    <div id="target-picker" class="overlay-modal hidden">
+        <div class="overlay-modal-inner">
+            <h3 class="overlay-modal-title">SELECT TARGET</h3>
+            <div id="target-list" class="target-btn-list"></div>
+        </div>
+    </div>
+
+    <!-- Powerup Cinematic Overlay -->
+    <div id="powerup-overlay" class="overlay-cinematic hidden">
+        <div class="cinematic-content">
+            <p id="pu-user" class="title-sub"></p>
+            <h1 id="pu-name" class="premium-title">POWERUP</h1>
+            <p id="pu-desc" class="cinematic-desc"></p>
+        </div>
+    </div>
+
+    <script src="js/audio.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/socket.js"></script>
+    <script src="js/game.js"></script>
 </body>
 
 </html>
