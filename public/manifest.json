@@ -1,0 +1,16 @@
+{
+  "name": "UNO V2 - Neon Multiplayer",
+  "short_name": "UNO V2",
+  "description": "Professional-grade multiplayer Uno card game with modern glassmorphism design.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d0d0d",
+  "theme_color": "#00f2ff",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3579/3579185.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
